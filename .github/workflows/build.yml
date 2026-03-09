@@ -33,7 +33,7 @@ jobs:
             options.html \
             options.js \
             _locales \
-            Icons
+            icons
 
       - name: Attach zip to release
         uses: softprops/action-gh-release@v2
