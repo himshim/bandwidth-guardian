@@ -1,0 +1,34 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build extension zip
+        run: bash build.sh --out .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bandwidth-guardian-zip
+          path: bandwidth-guardian-*.zip
+          retention-days: 30
+
+      - name: Attach zip to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: bandwidth-guardian-*.zip
