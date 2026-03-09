@@ -17,8 +17,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get version from manifest
+        id: version
+        run: echo "version=$(python3 -c "import json; print(json.load(open('manifest.json'))['version'])")" >> $GITHUB_OUTPUT
+
       - name: Build extension zip
-        run: bash build.sh --out .
+        run: |
+          zip -r bandwidth-guardian-${{ steps.version.outputs.version }}.zip \
+            manifest.json \
+            defaults.js \
+            service-worker.js \
+            content.js \
+            prehook.js \
+            popup.html \
+            popup.js \
+            options.html \
+            options.js \
+            _locales \
+            icons
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
